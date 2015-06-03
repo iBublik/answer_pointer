@@ -1,0 +1,7 @@
+section.questions
+  h1 List of all questions
+
+  - @questions.each do |question|
+    p = link_to question.title, question, class: "question"
+hr
+= link_to "Ask question", new_question_path, class: "btn btn-primary"

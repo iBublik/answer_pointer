@@ -1,0 +1,15 @@
+= form_for [@question, @answer] do |f|
+  h4 Your answer
+  p
+    = f.label :body
+    = f.text_area :body, class: "form-control", rows: 10
+  p
+    = f.submit class: "btn btn-success"
+
+- if @answer.errors.any?
+  div.error_explanation
+    div class="alert alert-danger"
+      | The form contains #{pluralize(@answer.errors.count, "error")}.
+    ul
+      - @answer.errors.full_messages.each do |msg|
+        li = msg
