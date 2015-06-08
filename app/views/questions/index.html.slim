@@ -1,7 +1,10 @@
 section.questions
   h1 List of all questions
+  p= notice
 
   - @questions.each do |question|
-    p = link_to question.title, question, class: "question"
+    p= link_to question.title, question, class: 'question'
+    - if current_user && question.user_id == current_user.id
+      = link_to 'Delete', question_path(question), method: :delete, class: 'btn btn-danger'
 hr
-= link_to "Ask question", new_question_path, class: "btn btn-primary"
+= link_to 'Ask question', new_question_path, class: 'btn btn-primary'

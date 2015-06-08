@@ -1,16 +1,22 @@
 section.question
-  h3 = @question.title
+  h3= notice
+  h3= @question.title
   hr
-  p = @question.body
+  p= @question.body
+  - if current_user && @question.user_id == current_user.id
+    = link_to 'Delete', question_path(@question), method: :delete, class: 'btn btn-danger'
 hr
 
 section.answers
   h3 #{@question.answers.count} Answers
   hr
   - @question.answers.each do |answer|
-    div.answer
-      p = answer.body
+    .answer
+      p= answer.body
+      - if current_user && answer.user_id == current_user.id
+        = link_to 'Delete', answer_path(answer), method: :delete, class: 'btn btn-danger'
+
     hr
 
-  = link_to "Add answer", new_question_answer_path(@question), class: 'btn btn-primary'
-  = link_to "Back to questions list", questions_path, class: 'btn btn-default'
+  = link_to 'Add answer', new_question_answer_path(@question), class: 'btn btn-primary'
+  = link_to 'Back to questions list', questions_path, class: 'btn btn-default'
