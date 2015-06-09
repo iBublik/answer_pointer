@@ -29,6 +29,11 @@ RSpec.describe AnswersController, type: :controller do
         post :create, question_id: question.id, answer: attributes_for(:answer)
         expect(response).to redirect_to question_path(question)
       end
+
+      it 'should bind new answer to it\'s creator' do
+        expect { post :create, question_id: question.id, answer: attributes_for(:answer) }
+            .to change(subject.current_user.answers, :count).by(1)
+      end
     end
 
     context 'with invalid params' do
@@ -53,12 +58,12 @@ RSpec.describe AnswersController, type: :controller do
       end
 
       it 'deletes answer' do
-        expect { delete :destroy, question_id: question.id, id: current_user_answer }
+        expect { delete :destroy, id: current_user_answer }
             .to change(question.answers, :count).by(-1)
       end
 
       it 'redirects to question view' do
-        delete :destroy, question_id: question.id, id: current_user_answer
+        delete :destroy, id: current_user_answer
         expect(response).to redirect_to question_path(question)
       end
     end
@@ -70,7 +75,7 @@ RSpec.describe AnswersController, type: :controller do
       end
 
       it 'does not delete question' do
-        expect { delete :destroy, question_id: question.id, id: another_user_answer }
+        expect { delete :destroy, id: another_user_answer }
             .to_not change(Question, :count)
       end
     end

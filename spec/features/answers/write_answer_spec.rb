@@ -19,6 +19,7 @@ feature 'Write answer', %q{
     click_on 'Create'
 
     expect(page).to have_content 'Your answer successfully added'
+    expect(page).to have_content(answer.body)
   end
 
   scenario 'Non-authenticated user tries to write answer' do
@@ -26,5 +27,15 @@ feature 'Write answer', %q{
     click_on 'Add answer'
 
     expect(page).to have_content 'You need to sign in or sign up before continuing.'
+  end
+
+  scenario 'Authenticated user tries to add empty answer' do
+    sign_in(user)
+
+    visit question_path(question)
+    click_on 'Add answer'
+    click_on 'Create'
+
+    expect(page).to have_content "Body can't be blank"
   end
 end

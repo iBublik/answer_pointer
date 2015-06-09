@@ -14,7 +14,7 @@ section.answers
     .answer
       p= answer.body
       - if current_user && answer.user_id == current_user.id
-        = link_to 'Delete', question_answer_path(@question, answer), method: :delete, class: 'btn btn-danger'
+        = link_to 'Delete', answer_path(answer), method: :delete, class: 'btn btn-danger'
 
     hr
 

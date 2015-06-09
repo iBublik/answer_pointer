@@ -18,9 +18,10 @@ ActiveRecord::Schema.define(version: 20150608182933) do
 
   create_table "answers", force: :cascade do |t|
     t.text     "body"
+    t.boolean  "is_solution", default: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.integer  "question_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
     t.integer  "user_id"
   end
 
