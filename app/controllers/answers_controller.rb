@@ -2,16 +2,12 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_question, only: [:new, :create]
 
-  def new
-    @answer = Answer.new(question_id: @question.id)
-  end
-
   def create
-    @answer = @question.answers.new(answers_params.merge(user: current_user))
+    @answer = @question.answers.build(answers_params.merge(user: current_user))
     if @answer.save
-      redirect_to @answer.question, notice: 'Your answer successfully added'
+      flash.notice = 'Your answer successfully added'
     else
-      render :new
+      flash.notice = 'Something goes wrong. Please try to resubmit your answer'
     end
   end
 

@@ -1,5 +1,4 @@
 section.question
-  h3= notice
   h3= @question.title
   hr
   p= @question.body
@@ -8,15 +7,9 @@ section.question
 hr
 
 section.answers
-  h3 #{@question.answers.count} Answers
+  h3= pluralize(@question.answers.count, 'Answer')
   hr
-  - @question.answers.each do |answer|
-    .answer
-      p= answer.body
-      - if current_user && answer.user_id == current_user.id
-        = link_to 'Delete', answer_path(answer), method: :delete, class: 'btn btn-danger'
+  = render @question.answers
 
-    hr
-
-  = link_to 'Add answer', new_question_answer_path(@question), class: 'btn btn-primary'
-  = link_to 'Back to questions list', questions_path, class: 'btn btn-default'
+= render 'answers/form'
+= link_to 'Back to questions list', questions_path, class: 'btn btn-default'

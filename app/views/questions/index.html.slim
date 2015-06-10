@@ -1,6 +1,5 @@
 section.questions
   h1 List of all questions
-  p= notice
 
   - @questions.each do |question|
     p= link_to question.title, question, class: 'question'

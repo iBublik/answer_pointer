@@ -1,0 +1,6 @@
+- if answer.persisted?
+  .answer
+    p= answer.body
+    - if current_user && answer.user_id == current_user.id
+      = link_to 'Delete', answer_path(answer), method: :delete, class: 'btn btn-danger'
+  hr
