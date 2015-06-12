@@ -1,6 +1,7 @@
 $('.notifications').html('<%= j render 'layouts/notifications' %>');
+var answerId = <%= @answer.id %>;
 <% if @answer.errors.present? %>
-    var $answerForm = $('.new_answer');
+    var $answerForm = $('form#edit-answer-' + answerId);
     var $errors = $answerForm.children('.error_explanation');
     var errorsHtml = '<%= j render 'layouts/errors', object: @answer %>';
     if ($errors.length) {
@@ -13,9 +14,16 @@ $('.notifications').html('<%= j render 'layouts/notifications' %>');
         $(this).remove();
     });
 <% else %>
-    $('.answers-count').html('<%= render 'questions/answers_count' %>');
-    $('.answers').append(
-        '<%= j render @answer, show_solution_link: belongs_to_current_user?(@answer.question) %>'
-    );
-    $('.new_answer #answer_body').val('');
+    var $answer = $('#answer-' + answerId);
+    $answer.children('.answer-body').text('<%= @answer.body %>');
+    var $editForm = $answer.children('form#edit-answer-' + answerId);
+    $editForm.hide();
+    var $editLink = $answer.children('.edit-answer-link');
+    $editLink.show();
+
+    $editLink.click(function(e) {
+        e.preventDefault();
+        $(this).hide();
+        $editForm.show();
+    });
 <% end %>

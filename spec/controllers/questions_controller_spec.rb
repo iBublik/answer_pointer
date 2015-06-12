@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
   let(:question) { create(:question) }
+  let(:current_user_question) { create(:question, user: @user) }
 
   describe 'GET #index' do
     let(:questions) { create_list(:question, 2) }
@@ -41,18 +42,6 @@ RSpec.describe QuestionsController, type: :controller do
     it { should render_template :new }
   end
 
-  describe 'GET #edit' do
-    sign_in_user
-
-    before { get :edit, id: question }
-
-    it 'assigns the requested question to @question' do
-      expect(assigns(:question)).to eq question
-    end
-
-    it { should render_template :edit }
-  end
-
   describe 'POST #create' do
     sign_in_user
 
@@ -69,7 +58,7 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'should bind new question to it\'s creator' do
         expect { post :create, question: attributes_for(:question) }
-            .to change(subject.current_user.questions, :count).by(1)
+            .to change(@user.questions, :count).by(1)
       end
     end
 
@@ -91,25 +80,41 @@ RSpec.describe QuestionsController, type: :controller do
 
     context 'valid attributes' do
       it 'assigns the requested question to @question' do
-        patch :update, id: question, question: attributes_for(:question)
+        patch :update, id: question, question: attributes_for(:question), format: :js
         expect(assigns(:question)).to eq question
       end
 
-      it 'changes question attributes' do
-        patch :update, id: question, question: { title: 'new title', body: 'new body' }
-        question.reload
-        expect(question.title).to eq 'new title'
-        expect(question.body).to eq 'new body'
+      it 'changes question attributes if logged user is author' do
+        patch :update,
+              id: current_user_question,
+              question: { title: 'new title', body: 'new body' },
+              format: :js
+        current_user_question.reload
+        expect(current_user_question.title).to eq 'new title'
+        expect(current_user_question.body).to eq 'new body'
       end
 
-      it 'redirects to the updated question' do
-        patch :update, id: question, question: attributes_for(:question)
-        expect(response).to redirect_to question
+      it 'does not change question attributes if logged user is not author' do
+        old_question = question
+        patch :update,
+              id: question,
+              question: { title: 'new title', body: 'new body' },
+              format: :js
+        question.reload
+        expect(question.title).to eq old_question.title
+        expect(question.body).to eq old_question.body
+      end
+
+      it 'renders update template' do
+        patch :update, id: question, question: attributes_for(:question), format: :js
+        expect(response).to render_template :update
       end
     end
 
     context 'invalid atributes' do
-      before { patch :update, id: question, question: { title: 'new title', body: nil } }
+      before do
+        patch :update, id: question, question: { title: 'new title', body: nil }, format: :js
+      end
 
       it 'does not change question attributes' do
         old_question = question
@@ -118,32 +123,32 @@ RSpec.describe QuestionsController, type: :controller do
         expect(question.body).to eq old_question.body
       end
 
-      it { should render_template :edit }
+      it { should render_template :update }
     end
   end
 
   describe 'DELETE #destroy' do
     sign_in_user
 
-    context 'by author of question' do
-      let!(:user_question) { create(:question, user: subject.current_user) }
+    before do
+      question
+      current_user_question
+    end
 
+    context 'by author of question' do
       it 'deletes question' do
-        expect { delete :destroy, id: user_question }.to change(Question, :count).by(-1)
+        expect { delete :destroy, id: current_user_question }.to change(Question, :count).by(-1)
       end
 
       it 'redirects to index view' do
-        delete :destroy, id: question
+        delete :destroy, id: current_user_question
         expect(response).to redirect_to questions_path
       end
     end
 
     context 'by non-author' do
-      let(:author) { create(:user) }
-      let!(:another_user_question) { create(:question, user: author) }
-
       it 'does not delete question' do
-        expect { delete :destroy, id: another_user_question }
+        expect { delete :destroy, id: question }
             .to_not change(Question, :count)
       end
     end

@@ -5,4 +5,6 @@ class Answer < ActiveRecord::Base
   validates :body, presence: true, length: { maximum: 30_000 }
   validates :question_id, presence: true
   validates :user_id, presence: true
+
+  default_scope { order('is_solution DESC') }
 end

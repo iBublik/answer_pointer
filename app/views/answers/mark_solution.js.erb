@@ -1,0 +1,7 @@
+<% if @answer.is_solution %>
+    var $oldSolution = $('.solution');
+    $oldSolution.children('h4').remove();
+    $oldSolution.removeClass('solution');
+    $('#answer-<%= @answer.id %>').remove();
+    $('<%= j render @answer, show_solution_link: true %>').insertAfter('.answers-count');
+<% end %>

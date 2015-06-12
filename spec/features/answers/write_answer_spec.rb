@@ -1,4 +1,4 @@
-require 'rails_helper'
+require_relative '../acceptance_helper'
 
 feature 'User answer', %q{
   In order to help someone to solve his problem
@@ -14,11 +14,14 @@ feature 'User answer', %q{
     sign_in(user)
 
     visit question_path(question)
-    fill_in 'Your answer', with: answer.body
-    click_on 'Create'
+    within '.new_answer' do
+      fill_in 'Your answer', with: answer.body
+      click_on 'Create'
+    end
 
     expect(current_path).to eq question_path(question)
     expect(page).to have_content 'Your answer successfully added'
+    expect(page).to have_content("#{question.answers.count} Answer")
     within 'section.answers' do
       expect(page).to have_content(answer.body)
     end
@@ -31,13 +34,13 @@ feature 'User answer', %q{
     expect(page).to have_content 'You need to sign in or sign up before continuing.'
   end
 
-  scenario 'Authenticated user tries to add empty answer', js: true do
+  scenario 'Authenticated user tries to add invalid answer', js: true do
     sign_in(user)
 
     visit question_path(question)
     click_on 'Create'
 
     expect(current_path).to eq question_path(question)
-    expect(page).to have_content 'Something goes wrong. Please try to resubmit your answer'
+    expect(page).to have_content 'Body can\'t be blank'
   end
 end

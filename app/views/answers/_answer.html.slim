@@ -1,6 +1,22 @@
 - if answer.persisted?
-  .answer
-    p= answer.body
-    - if current_user && answer.user_id == current_user.id
-      = link_to 'Delete', answer_path(answer), method: :delete, class: 'btn btn-danger'
-  hr
+  .answer id="answer-#{answer.id}" class=('solution' if answer.is_solution)
+    hr
+    -if answer.is_solution
+      h4 Solution
+    p.answer-body
+      = answer.body
+    - if belongs_to_current_user? answer
+      = link_to 'Delete', answer, method: :delete, class: 'btn btn-danger', remote: true
+      = link_to 'Edit', '', class: 'btn btn-warning edit-answer-link',
+                            data: { answer_id: answer.id }
+    - if show_solution_link
+      = link_to 'Mark as solution', mark_solution_answer_path(answer),
+                                    method: :patch, remote: true,
+                                    class: 'solution-link'
+    = form_for answer, remote: true, html: { id: "edit-answer-#{answer.id}" } do |f|
+      p
+        = f.label :body, 'Your answer'
+        = f.text_area :body, class: 'form-control'
+      p
+        = f.submit 'Save', class: 'btn btn-success save-answer-btn',
+                           data: { answer_id: answer.id }
