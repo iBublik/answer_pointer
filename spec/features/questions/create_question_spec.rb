@@ -1,4 +1,4 @@
-require 'rails_helper'
+require_relative '../acceptance_helper'
 
 feature 'Create question', %q{
   In order to get answers from community
@@ -15,7 +15,7 @@ feature 'Create question', %q{
     visit questions_path
     click_on 'Ask question'
     fill_in 'Title', with: question.title
-    fill_in 'Body', with: question.body
+    fill_in 'Your question', with: question.body
     click_on 'Create'
 
     expect(page).to have_content 'Your question successfully created'

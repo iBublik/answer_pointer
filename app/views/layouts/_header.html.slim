@@ -4,7 +4,7 @@ header.navbar.navbar-inverse
       = link_to 'Answer Pointer', root_path, class: 'navbar-brand'
     .navbar-collapse.collapse
       .navbar-right
-        - if current_user
+        - if user_signed_in?
           = link_to 'Log out', destroy_user_session_path, method: :delete,
                     class: 'btn btn-default navbar-btn'
         - else

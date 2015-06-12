@@ -1,14 +1,6 @@
 = form_for [@question, @answer], remote: true do |f|
   p
     = f.label :body, 'Your answer'
-    = f.text_area :body, class: 'form-control', rows: 10
+    = f.text_area :body, class: 'form-control'
   p
     = f.submit class: 'btn btn-success'
-
-- if @answer.errors.any?
-  .error_explanation
-    .alert.alert-danger
-      | The form contains #{pluralize(@answer.errors.count, 'error')}.
-    ul
-      - @answer.errors.full_messages.each do |msg|
-        li= msg

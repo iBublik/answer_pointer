@@ -1,0 +1,5 @@
+<% unless @answer.persisted? %>
+    $('.notifications').html('<%= j render 'layouts/notifications' %>');
+    $('#answer-<%= @answer.id %>').remove();
+    $('.answers-count').html('<%= render 'questions/answers_count' %>');
+<% end %>

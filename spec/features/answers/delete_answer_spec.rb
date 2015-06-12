@@ -1,4 +1,4 @@
-require 'rails_helper'
+require_relative '../acceptance_helper'
 
 feature 'Delete answer', %q{
   In order to be able to remove answers
@@ -11,7 +11,7 @@ feature 'Delete answer', %q{
   given!(:answer) { create(:answer, user: author, question: question) }
   given(:non_author) { create(:user) }
 
-  scenario 'Author of the answer tries to delete answer' do
+  scenario 'Author of the answer tries to delete answer', js: true do
     sign_in(author)
 
     visit question_path(question)
@@ -19,6 +19,7 @@ feature 'Delete answer', %q{
       click_on 'Delete'
     end
 
+    expect(page).to have_content("#{question.answers.count} Answer")
     expect(page).to have_content 'Your answer was successfully deleted'
     expect(page).to_not have_content(answer.body)
   end
