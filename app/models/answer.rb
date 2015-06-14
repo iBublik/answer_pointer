@@ -7,4 +7,11 @@ class Answer < ActiveRecord::Base
   validates :user_id, presence: true
 
   default_scope { order('is_solution DESC') }
+
+  def mark_solution
+    transaction do
+      question.answers.update_all(is_solution: false)
+      update(is_solution: true)
+    end
+  end
 end

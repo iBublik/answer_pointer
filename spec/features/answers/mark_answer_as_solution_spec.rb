@@ -8,7 +8,7 @@ feature 'Choose solution to question', %q{
 
   given(:user) { create(:user) }
   given(:question) { create(:question, user: user) }
-  given!(:answers) { create_list(:answer, 3, question: question) }
+  given!(:answers) { create_pair(:answer, question: question) }
   given(:non_author) { create(:user) }
 
 
@@ -31,6 +31,8 @@ feature 'Choose solution to question', %q{
   end
 
   describe 'Authenticated author' do
+    given!(:solution) { create(:solution_answer, question: question) }
+
     before do
       sign_in(user)
       visit question_path(question)
@@ -42,13 +44,18 @@ feature 'Choose solution to question', %q{
       end
     end
 
+    scenario 'sees existing solution in top if answers' do
+      expect(page).to have_selector('.answer:first-of-type', text: solution.body)
+    end
+
     scenario 'mark answer as solution', js: true do
-      solution_answer = find("#answer-#{answers[1].id}")
-      solution_answer.click_on('Mark as solution')
+      new_solution_css_id = "#answer-#{answers.last.id}"
+      find(new_solution_css_id).click_on('Mark as solution')
 
       expect(page).to have_selector('.answer.solution', count: 1)
-      expect(solution_answer[:class]).to match(/solution/)
-      expect(page).to have_selector('.answer:first-of-type', text: answers[1].body)
+      expect(page).to have_selector("#{new_solution_css_id}.solution")
+      expect(page).to_not have_selector("#answer-#{solution.id}.solution")
+      expect(page).to have_selector('.answer:first-of-type', text: answers.last.body)
     end
   end
 
