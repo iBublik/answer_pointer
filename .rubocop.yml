@@ -7,8 +7,9 @@ AllCops:
   Exclude:
   - 'vendor/**/*'
   - 'spec/**/*'
-  - 'db/*.rb'
+  - 'db/**/*.rb'
   - 'bin/**/*'
+  - 'public/uploads/**/*'
   RunRailsCops: true
   DisplayCopNames: true
   StyleGuideCopsOnly: false
@@ -18,8 +19,8 @@ Style/Documentation:
 
 Metrics/LineLength:
   Exclude:
-  - 'config/initializers/*'
-  - 'config/environments/*'
+  - 'config/initializers/**/*'
+  - 'config/environments/**/*'
   Max: 100
 
 Metrics/MethodLength:

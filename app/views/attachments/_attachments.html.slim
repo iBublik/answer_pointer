@@ -1,0 +1,5 @@
+- if attachable.attachments.any?
+  p Attachments:
+  ul.attachemnts
+  - attachable.attachments.each do |attachment|
+    li= link_to attachment.file.identifier, attachment.file.url

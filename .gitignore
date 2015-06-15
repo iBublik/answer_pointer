@@ -17,3 +17,6 @@ config/database.yml
 
 #Ignore IDE settings
 .idea
+
+#Ignore uploaded files
+/public/uploads
