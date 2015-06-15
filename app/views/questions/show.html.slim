@@ -1,20 +1,4 @@
-section.question id="question-#{@question.id}"
-  h3.question-title = @question.title
-  hr
-  p.question-body = @question.body
-  - if belongs_to_current_user? @question
-    = link_to 'Delete', question_path(@question), method: :delete, class: 'btn btn-danger'
-    = link_to 'Edit', '', class: 'btn btn-warning edit-question-link',
-                          data: { question_id: @question.id }
-    = form_for @question, remote: true, html: { id: "edit-question-#{@question.id}" } do |f|
-      p
-        = f.label :title
-        = f.text_field :title, class: 'form-control'
-      p
-        = f.label :body, 'Your question'
-        = f.text_area :body, class: 'form-control'
-      p
-        = f.submit 'Save', class: 'btn btn-success'
+= render @question
 hr
 
 section.answers
@@ -22,5 +6,7 @@ section.answers
   = render @question.answers, show_solution_link: belongs_to_current_user?(@question)
 hr
 
-= render 'answers/form'
+= form_for [@question, @answer], remote: true do |f|
+  = render 'answers/answer_fields', answer: @answer, f: f
+
 = link_to 'Back to questions list', questions_path, class: 'btn btn-default'

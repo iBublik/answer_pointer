@@ -5,6 +5,7 @@
       h4 Solution
     p.answer-body
       = answer.body
+    = render 'attachments/attachments', attachable: answer
     - if belongs_to_current_user? answer
       = link_to 'Delete', answer, method: :delete, class: 'btn btn-danger', remote: true
       = link_to 'Edit', '', class: 'btn btn-warning edit-answer-link',
@@ -13,10 +14,5 @@
       = link_to 'Mark as solution', mark_solution_answer_path(answer),
                                     method: :patch, remote: true,
                                     class: 'solution-link'
-    = form_for answer, remote: true, html: { id: "edit-answer-#{answer.id}" } do |f|
-      p
-        = f.label :body, 'Your answer'
-        = f.text_area :body, class: 'form-control'
-      p
-        = f.submit 'Save', class: 'btn btn-success save-answer-btn',
-                           data: { answer_id: answer.id }
+    = form_for answer, remote: true, html: {id: "edit-answer-#{answer.id}"} do |f|
+      = render 'answers/answer_fields', answer: answer, f: f

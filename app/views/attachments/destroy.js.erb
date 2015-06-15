@@ -1,0 +1,7 @@
+<% unless @attachment.persisted? %>
+    $('#attach-<%= @attachment.id %>').remove();
+    var $attachList = $('.attachments ul');
+    if ($attachList.children().length == 0) {
+        $attachList.closest('.attachments').remove();
+    }
+<% end %>

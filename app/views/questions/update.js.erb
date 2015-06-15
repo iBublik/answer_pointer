@@ -13,17 +13,11 @@ var questionId = <%= @question.id %>;
         $(this).remove();
     });
 <% else %>
-    var $question = $('#question-' + questionId);
-    $question.children('.question-title').text('<%= @question.title %>');
-    $question.children('.question-body').text('<%= @question.body %>');
-    var $editForm = $question.children('form#edit-question-' + questionId);
-    $editForm.hide();
-    var $editLink = $question.children('.edit-question-link');
-    $editLink.show();
+    var $question = $('.question');
 
-    $editLink.click(function(e) {
-        e.preventDefault();
-        $(this).hide();
-        $editForm.show();
-    });
+    <% if remotipart_submitted? %>
+        $question.replaceWith('<%= j "#{render @question}" %>');
+    <% else %>
+        $question.replaceWith('<%= j render @question%>');
+    <% end %>
 <% end %>

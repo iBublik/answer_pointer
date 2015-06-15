@@ -1,0 +1,5 @@
+.nested-fields id="nested-fields-#{f.object.id}"
+  .field
+    = f.label :file
+    = f.file_field :file
+  = link_to_remove_association "Remove attachment", f

@@ -1,0 +1,19 @@
+p
+  = f.label :title
+  = f.text_field :title, class: 'form-control'
+p
+  = f.label :body, 'Your question'
+  = f.text_area :body, class: 'form-control', rows: 10
+p Attachments:
+p
+  = f.fields_for :attachments do |attach|
+    = render 'attachments/attach_fields', f: attach
+  .links
+    = link_to_add_association 'Add attachment', f,
+                              :attachments,
+                              partial: 'attachments/attach_fields'
+p
+  - if question.new_record?
+    = f.submit class: 'btn btn-success'
+  -else
+    = f.submit 'Save', class: 'btn btn-success'
