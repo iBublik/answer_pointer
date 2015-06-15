@@ -11,7 +11,7 @@ class Answer < ActiveRecord::Base
   def mark_solution
     transaction do
       question.answers.update_all(is_solution: false)
-      update(is_solution: true)
+      update!(is_solution: true)
     end
   end
 end
