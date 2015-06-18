@@ -30,11 +30,4 @@ feature 'Add files to question', %q{
     end
   end
 
-  scenario 'User tries to add question with file, but didn\'t attach the file', js: true do
-    click_on 'Add attachment'
-    click_on 'Create Question'
-
-    expect(page).to have_content 'Attachments file can\'t be blank'
-  end
-
 end

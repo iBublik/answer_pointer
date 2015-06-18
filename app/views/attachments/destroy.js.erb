@@ -1,0 +1,7 @@
+<% unless @attachment.persisted? %>
+    <% if @attachment.other_attachments.any? %>
+        $('#attach-<%= @attachment.id %>').remove();
+    <% else %>
+        $('.attachments').remove();
+    <% end %>
+<% end %>

@@ -1,14 +1,15 @@
 require_relative '../acceptance_helper'
 
-feature 'Remove question attachment', %q{
-  In order to delete attachment file from question
-  As an author of the question
-  I want to be able to remove questions\'s attachments'
+feature 'Remove answer attachment', %q{
+  In order to delete attachment file from answer
+  As an author of the answer
+  I want to be able to remove answer\'s attachments'
 } do
 
   given(:user) { create(:user) }
-  given(:question) { create(:question, user: user) }
-  given!(:attachs) { create_pair(:attachment, attachable: question) }
+  given(:question) { create(:question) }
+  given(:answer) { create(:answer, user: user, question: question) }
+  given!(:attachs) { create_pair(:attachment, attachable: answer) }
   given(:non_author) { create(:user) }
 
   describe 'Authenticated author' do
@@ -18,15 +19,17 @@ feature 'Remove question attachment', %q{
     end
 
     scenario 'sees link to remove attachment' do
-      attachs.each do |attach|
-        expect(page).to have_link "delete-attach-#{attach.id}"
+      within '.answers' do
+        attachs.each do |attach|
+          expect(page).to have_link "delete-attach-#{attach.id}"
+        end
       end
     end
 
     scenario 'deletes single attachment', js: true do
-      click_link "delete-attach-#{attachs.first.id}"
+      within '.answers' do
+        click_link "delete-attach-#{attachs.first.id}"
 
-      within '.question' do
         expect(page).to_not have_selector("#attach-#{attachs.first.id}")
         expect(page).to have_content 'Attachments'
         expect(page).to have_content(attachs.last.file.identifier)
@@ -34,12 +37,12 @@ feature 'Remove question attachment', %q{
     end
 
     scenario 'deletes all attachments', js: true do
-      attachs.each do |attach|
-        click_link "delete-attach-#{attach.id}"
-        expect(page).to_not have_selector("#attach-#{attach.id}")
-      end
+      within '.answers' do
+        attachs.each do |attach|
+          click_link "delete-attach-#{attach.id}"
+          expect(page).to_not have_selector("#attach-#{attach.id}")
+        end
 
-      within '.question' do
         expect(page).to_not have_content 'Attachments'
       end
     end
