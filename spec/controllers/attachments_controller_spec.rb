@@ -13,7 +13,7 @@ RSpec.describe AttachmentsController, type: :controller do
     context 'by author of attachable' do
       it 'deletes attachment' do
         expect { delete :destroy, id: attach, format: :js }
-            .to change(attachable.attachments, :count).by(-1)
+            .to change(Attachment, :count).by(-1)
       end
 
       it 'renders destroy template' do

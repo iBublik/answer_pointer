@@ -24,10 +24,12 @@ feature 'Remove question attachment', %q{
     end
 
     scenario 'deletes single attachment', js: true do
-      click_link "delete-attach-#{attachs.first.id}"
+      deleted_attach = attachs.first
+      click_link "delete-attach-#{deleted_attach.id}"
 
       within '.question' do
-        expect(page).to_not have_selector("#attach-#{attachs.first.id}")
+        expect(page).to_not have_link(deleted_attach.file.identifier,
+                                      href: deleted_attach.file.url)
         expect(page).to have_content 'Attachments'
         expect(page).to have_content(attachs.last.file.identifier)
       end
@@ -36,7 +38,7 @@ feature 'Remove question attachment', %q{
     scenario 'deletes all attachments', js: true do
       attachs.each do |attach|
         click_link "delete-attach-#{attach.id}"
-        expect(page).to_not have_selector("#attach-#{attach.id}")
+        expect(page).to_not have_link(attach.file.identifier, href: attach.file.url)
       end
 
       within '.question' do
@@ -49,8 +51,9 @@ feature 'Remove question attachment', %q{
         click_on 'Edit'
       end
 
+      deleted_attach = attachs.first
       within '.edit_question' do
-        within "#nested-fields-#{attachs.first.id}" do
+        within "#nested-fields-#{deleted_attach.id}" do
           click_on 'Remove attachment'
         end
 
@@ -58,7 +61,7 @@ feature 'Remove question attachment', %q{
       end
 
       within '.question' do
-        expect(page).to_not have_selector("#attach-#{attachs.first.id}")
+        expect(page).to_not have_link(deleted_attach.file.identifier, href: deleted_attach.file.url)
       end
     end
   end
