@@ -8,14 +8,14 @@ feature 'Add files to answer', %q{
 
   given(:user) { create(:user) }
   given(:question) { create(:question) }
+  given!(:answer) { create(:answer, question: question, user: user) }
+  given(:upload_files) { %w[spec_helper.rb rails_helper.rb] }
 
   background do
     sign_in(user)
     visit question_path(question)
     fill_in 'Your answer', with: 'Test body'
   end
-
-  given(:upload_files) { %w[spec_helper.rb rails_helper.rb] }
 
   scenario 'User adds several files when creates answer', js: true do
     within '.new_answer' do
@@ -28,9 +28,25 @@ feature 'Add files to answer', %q{
 
     within '.answers' do
       upload_files.each do |file|
-        expect(page).to have_link "#{file}", "/uploads/attachment/file/1/#{file}"
+        expect(page).to have_link "#{file}"
       end
     end
   end
 
+  scenario 'User adds file while editing existing answer', js: true do
+    within '.answers' do
+      click_on 'Edit'
+    end
+
+    within '.edit_answer' do
+      click_on 'Add attachment'
+      attach_file 'File', "#{Rails.root}/spec/#{upload_files.first}"
+
+      click_on 'Save'
+    end
+
+    within '.answers' do
+      expect(page).to have_link "#{upload_files.first}"
+    end
+  end
 end

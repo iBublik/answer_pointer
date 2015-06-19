@@ -2,6 +2,7 @@ $('.notifications').html('<%= j render 'layouts/notifications' %>');
 var answerId = <%= @answer.id %>;
 <% if @answer.errors.present? %>
     var $answerForm = $('form#edit-answer-' + answerId);
+    $answerForm.prepend('<b>ERRORS</b>');
     var $errors = $answerForm.children('.error_explanation');
     var errorsHtml = '<%= j render 'layouts/errors', object: @answer %>';
     if ($errors.length) {
@@ -15,15 +16,9 @@ var answerId = <%= @answer.id %>;
     });
 <% else %>
     var $answer = $('#answer-' + answerId);
-    $answer.children('.answer-body').text('<%= @answer.body %>');
-    var $editForm = $answer.children('form#edit-answer-' + answerId);
-    $editForm.hide();
-    var $editLink = $answer.children('.edit-answer-link');
-    $editLink.show();
-
-    $editLink.click(function(e) {
-        e.preventDefault();
-        $(this).hide();
-        $editForm.show();
-    });
+    <% if remotipart_submitted? %>
+        $answer.replaceWith('<%= j "#{render @answer, show_solution_link: true}" %>');
+    <% else %>
+        $answer.replaceWith('<%= j render @answer, show_solution_link: true %>');
+    <% end %>
 <% end %>

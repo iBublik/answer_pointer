@@ -43,6 +43,24 @@ feature 'Remove question attachment', %q{
         expect(page).to_not have_content 'Attachments'
       end
     end
+
+    scenario 'removes attachment while editing question', js: true do
+      within '.question' do
+        click_on 'Edit'
+      end
+
+      within '.edit_question' do
+        within "#nested-fields-#{attachs.first.id}" do
+          click_on 'Remove attachment'
+        end
+
+        click_on 'Save'
+      end
+
+      within '.question' do
+        expect(page).to_not have_selector("#attach-#{attachs.first.id}")
+      end
+    end
   end
 
   scenario 'Authenticated user tries to remove file from other user\'s question' do

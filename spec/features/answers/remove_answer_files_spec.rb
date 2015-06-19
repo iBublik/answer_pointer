@@ -46,6 +46,24 @@ feature 'Remove answer attachment', %q{
         expect(page).to_not have_content 'Attachments'
       end
     end
+
+    scenario 'removes attachment while editing answer', js: true do
+      within '.answers' do
+        click_on 'Edit'
+      end
+
+      within '.edit_answer' do
+        within "#nested-fields-#{attachs.first.id}" do
+          click_on 'Remove attachment'
+        end
+
+        click_on 'Save'
+      end
+
+      within '.answers' do
+        expect(page).to_not have_selector("#attach-#{attachs.first.id}")
+      end
+    end
   end
 
   scenario 'Authenticated user tries to remove file from other user\'s question' do

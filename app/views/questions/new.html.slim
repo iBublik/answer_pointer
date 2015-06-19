@@ -1,2 +1,5 @@
 section.container
-  = render 'questions/form'
+  = form_for @question do |f|
+    = render 'question_fields', question: @question, f: f
+  - if @question.errors.any?
+    = render 'layouts/errors', object: @question

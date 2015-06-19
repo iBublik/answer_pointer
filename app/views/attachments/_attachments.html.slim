@@ -7,5 +7,5 @@
           = link_to attachment.file.identifier, attachment.file.url
           - if belongs_to_current_user? attachable
             = link_to attachment_path(attachment), method: :delete, remote: true,
-                      id: "delete-attach-#{attachment.id}"
+                      id: "delete-attach-#{attachment.id}", class: 'delete-attach-link'
               i.glyphicon.glyphicon-remove Remove
