@@ -105,22 +105,28 @@ RSpec.describe QuestionsController, type: :controller do
         expect(question.body).to eq old_question.body
       end
 
-      it 'renders update template' do
-        patch :update, id: question, question: attributes_for(:question), format: :js
+      it 'renders update template when user is author of question' do
+        patch :update, id: current_user_question, question: attributes_for(:question), format: :js
         expect(response).to render_template :update
+      end
+
+      it 'responds with status forbidden when user is not author' do
+        patch :update, id: question, question: attributes_for(:question), format: :js
+        expect(response).to be_forbidden
       end
     end
 
     context 'invalid atributes' do
       before do
-        patch :update, id: question, question: { title: 'new title', body: nil }, format: :js
+        patch :update, id: current_user_question,
+              question: { title: 'new title', body: nil }, format: :js
       end
 
       it 'does not change question attributes' do
-        old_question = question
-        question.reload
-        expect(question.title).to eq old_question.title
-        expect(question.body).to eq old_question.body
+        old_question = current_user_question
+        current_user_question.reload
+        expect(current_user_question.title).to eq old_question.title
+        expect(current_user_question.body).to eq old_question.body
       end
 
       it { should render_template :update }
@@ -151,6 +157,13 @@ RSpec.describe QuestionsController, type: :controller do
         expect { delete :destroy, id: question }
             .to_not change(Question, :count)
       end
+
+      it 'responds with status forbidden' do
+        delete :destroy, id: question
+        expect(response).to be_forbidden
+      end
     end
   end
+
+  it_behaves_like 'voting'
 end

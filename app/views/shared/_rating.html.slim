@@ -1,0 +1,19 @@
+.rating.row
+  b.col-md-1.rating-value Rating: #{votable.rating}
+  - if user_signed_in? && !belongs_to_current_user?(votable)
+    = link_to polymorphic_path(votable, action: 'vote_up'),
+              method: :patch, remote: true, data: { type: :json },
+              class: 'vote-link vote-up col-sm-1',
+              style: css_style_by_vote(vote, 1)
+      i.glyphicon.glyphicon-plus Up
+
+    = link_to polymorphic_path(votable, action: 'vote_down'),
+              method: :patch, remote: true, data: { type: :json },
+              class: 'vote-link vote-down col-sm-1',
+              style: css_style_by_vote(vote, -1)
+      i.glyphicon.glyphicon-minus Down
+
+    i.vote-cancel style=('display:none' if vote.nil?)
+      | Voted #{vote.present? && vote.value == 1 ? 'up' : 'down'}
+      = link_to '(Cancel)', polymorphic_path(votable, action: 'vote_cancel'),
+                method: :patch, remote: true, data: { type: :json }

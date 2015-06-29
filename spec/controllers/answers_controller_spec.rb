@@ -67,6 +67,11 @@ RSpec.describe AnswersController, type: :controller do
         expect { delete :destroy, id: answer, format: :js }
           .to_not change(Question, :count)
       end
+
+      it 'responds with status forbidden' do
+        delete :destroy, id: answer, format: :js
+        expect(response).to be_forbidden
+      end
     end
   end
 
@@ -103,26 +108,31 @@ RSpec.describe AnswersController, type: :controller do
         answer.reload
         expect(answer.body).to eq old_answer.body
       end
+
+      it 'responds with status forbidden' do
+        patch :update, id: answer, answer: { body: 'Edited answer' }, format: :js
+        expect(response).to be_forbidden
+      end
     end
   end
 
   describe 'PATCH #mark_solution' do
     let(:current_user_question) { create(:question, user: @user) }
-    let!(:answer) { create(:answer, question: current_user_question) }
-    let!(:solution) { create(:solution_answer, question: current_user_question) }
-
-    before { patch :mark_solution, id: answer, format: :js }
-
-    it 'assigns the requested answer to @answer' do
-      expect(assigns(:answer)).to eq answer
-    end
+    let!(:new_solution) { create(:answer, question: current_user_question) }
+    let!(:current_solution) { create(:solution_answer, question: current_user_question) }
 
     context 'by author of question' do
+      before { patch :mark_solution, id: new_solution, format: :js }
+
+      it 'assigns the requested answer to @answer' do
+        expect(assigns(:answer)).to eq new_solution
+      end
+
       it 'changes is_solution attribute' do
-        answer.reload
-        solution.reload
-        expect(answer.is_solution).to eq true
-        expect(solution.is_solution).to eq false
+        new_solution.reload
+        current_solution.reload
+        expect(new_solution.is_solution).to eq true
+        expect(current_solution.is_solution).to eq false
       end
 
       it 'checks there is only one solution for answer' do
@@ -141,7 +151,13 @@ RSpec.describe AnswersController, type: :controller do
         answer.reload
         expect(answer.is_solution).to eq old_answer.is_solution
       end
+
+      it 'responds with status forbidden' do
+        patch :mark_solution, id: answer, format: :js
+        expect(response).to be_forbidden
+      end
     end
   end
 
+  it_behaves_like 'voting'
 end

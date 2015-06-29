@@ -17,8 +17,14 @@ var answerId = <%= @answer.id %>;
 <% else %>
     var $answer = $('#answer-' + answerId);
     <% if remotipart_submitted? %>
-        $answer.replaceWith('<%= j "#{render @answer, show_solution_link: true}" %>');
+        $answer.replaceWith(
+            '<%= j "#{render @answer,
+                             show_solution_link: belongs_to_current_user?(@answer.question)}" %>'
+        );
     <% else %>
-        $answer.replaceWith('<%= j render @answer, show_solution_link: true %>');
+        $answer.replaceWith(
+            '<%= j render @answer,
+                          show_solution_link: belongs_to_current_user?(@answer.question) %>'
+        );
     <% end %>
 <% end %>

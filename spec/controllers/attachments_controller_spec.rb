@@ -29,6 +29,11 @@ RSpec.describe AttachmentsController, type: :controller do
         expect { delete :destroy, id: other_user_attach, format: :js }
             .to_not change(Attachment, :count)
       end
+
+      it 'responds with status forbidden' do
+        delete :destroy, id: other_user_attach, format: :js
+        expect(response).to be_forbidden
+      end
     end
   end
 end

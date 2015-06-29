@@ -19,7 +19,7 @@ feature 'Delete answer', %q{
       click_on 'Delete'
     end
 
-    expect(page).to have_content "#{question.answers.count} Answer"
+    expect(page).to have_content '0 Answers'
     expect(page).to have_content 'Your answer was successfully deleted'
     expect(page).to_not have_content(answer.body)
   end
