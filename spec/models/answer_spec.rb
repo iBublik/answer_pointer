@@ -3,16 +3,16 @@ require 'rails_helper'
 RSpec.describe Answer, type: :model do
   it { should belong_to :user }
   it { should belong_to :question }
-  it { should have_many(:attachments).dependent(:destroy) }
 
   it { should validate_presence_of :body }
   it { should validate_length_of(:body).is_at_most(30_000) }
   it { should validate_presence_of :question_id }
   it { should validate_presence_of :user_id }
 
-  it { should accept_nested_attributes_for :attachments }
+  it_should_behave_like 'attachable'
+  it_should_behave_like 'votable'
 
-  describe 'Method "mark_solution"' do
+  describe '#mark_solution' do
     let(:question) { create(:question) }
     let!(:answer) { create(:answer, question: question) }
     let!(:solution) { create(:solution_answer, question: question) }

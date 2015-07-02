@@ -38,6 +38,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin]
 
 gem 'devise'
 
+gem 'simple_form'
+
 gem 'carrierwave'
 gem 'remotipart'
 gem 'cocoon'
@@ -51,16 +53,16 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+end
 
+group :test do
+  gem 'shoulda-matchers'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'capybara'
   gem 'launchy'
   gem 'poltergeist'
   gem 'database_cleaner'
-end
-
-group :test do
-  gem 'shoulda-matchers'
+  gem 'test_after_commit'
 end
 

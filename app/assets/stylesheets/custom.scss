@@ -10,6 +10,19 @@
   color: black;
 }
 
-.glyphicon-remove:hover{
+.glyphicon-remove:hover,
+.glyphicon-minus:hover {
   color: red;
+}
+
+.glyphicon-plus:hover {
+  color: green;
+}
+
+.vote {
+  //display: inline;
+}
+
+.hidden {
+  display: none;
 }

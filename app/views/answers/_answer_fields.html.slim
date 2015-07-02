@@ -1,17 +1,14 @@
-p
-  = f.label :body, 'Your answer'
-  = f.text_area :body, class: 'form-control'
+= f.input :body, as: :text, label: 'Your answer', class: 'form-control'
 p Attachments:
-p
-  = f.fields_for :attachments do |attach|
-    = render 'attachments/attach_fields', f: attach
-  .links
-    = link_to_add_association 'Add attachment', f,
-                              :attachments,
-                              partial: 'attachments/attach_fields'
-p
-  - if answer.new_record?
-    = f.submit class: 'btn btn-success'
-  - else
-    = f.submit 'Save', class: 'btn btn-success save-answer-btn',
-               data: {answer_id: answer.id}
+= f.simple_fields_for :attachments do |attach|
+  = render 'attachments/attach_fields', f: attach
+.links
+  = link_to_add_association 'Add attachment', f,
+                            :attachments,
+                            partial: 'attachments/attach_fields'
+
+- if answer.new_record?
+  = f.button :submit, 'Create Answer', class: 'btn btn-success'
+- else
+  = f.button :submit, 'Save', class: 'btn btn-success save-answer-btn',
+             input_html: { data: {answer_id: answer.id} }
