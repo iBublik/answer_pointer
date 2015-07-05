@@ -1,5 +1,5 @@
 .rating.row
-  b.col-md-1.rating-value Rating: #{votable.rating}
+  b.col-sm-2.rating-value Rating: #{votable.rating}
   - if user_signed_in? && !belongs_to_current_user?(votable)
     = link_to polymorphic_path(votable, action: 'vote_up'),
               method: :patch, remote: true, data: { type: :json },

@@ -1,0 +1,7 @@
+p id="question-{{ id }}"
+  a href="{{ url }}" class="question" {{ title }}
+  | {{#if isAuthor}}
+  a href="{{ url }}" class="btn btn-danger pull-right" data-method="delete" style="margin-bottom: 0"
+    | Delete
+  | {{/if}}
+  hr

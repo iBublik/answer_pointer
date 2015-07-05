@@ -1,4 +1,4 @@
-section.question id="question-#{question.id}"
+section.question id="question-#{question.id}" data-question-id="#{question.id}"
   h3.question-title = question.title
   hr
   = render 'shared/rating', votable: question, vote: question.user_vote(current_user)
@@ -12,3 +12,5 @@ section.question id="question-#{question.id}"
               data: { question_id: question.id }
     = simple_form_for @question, remote: true, html: { id: "edit-question-#{question.id}" } do |f|
       = render 'question_fields', question: @question, f: f
+
+  = render 'comments/comments', commentable: @question

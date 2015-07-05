@@ -18,3 +18,5 @@
                                     class: 'solution-link'
     = simple_form_for answer, remote: true, html: {id: "edit-answer-#{answer.id}"} do |f|
       = render 'answers/answer_fields', answer: answer, f: f
+
+    = render 'comments/comments', commentable: answer

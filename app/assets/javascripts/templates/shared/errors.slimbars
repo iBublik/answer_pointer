@@ -1,0 +1,8 @@
+.error_explanation
+  .alert.alert-danger
+    | The form contains {{errors.length}} error.
+  ul
+    | {{#each errors}}
+    li
+      | {{this}}
+    | {{/each}}

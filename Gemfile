@@ -44,6 +44,14 @@ gem 'carrierwave'
 gem 'remotipart'
 gem 'cocoon'
 
+gem 'private_pub'
+gem 'thin'
+
+gem 'gon'
+gem 'handlebars_assets'
+
+gem 'quiet_assets', group: :development
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
@@ -65,4 +73,3 @@ group :test do
   gem 'database_cleaner'
   gem 'test_after_commit'
 end
-
