@@ -6,7 +6,10 @@ section.answers
   = render @question.answers, show_solution_link: belongs_to_current_user?(@question)
 hr
 
-= simple_form_for [@question, @answer], remote: true do |f|
+= simple_form_for [@question, @answer], remote: true, data: { type: :json } do |f|
   = render 'answers/answer_fields', answer: @answer, f: f
 
 = link_to 'Back to questions list', questions_path, class: 'btn btn-default'
+
+= subscribe_to "/questions/#{@question.id}/answers"
+= subscribe_to "/questions/#{@question.id}/comments"

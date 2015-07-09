@@ -9,6 +9,13 @@ ready = ->
     $('.question .delete-attach-link').hide()
     $('form#edit-question-' + questionId).show()
 
+  PrivatePub.subscribe '/questions/index', (data, channel) ->
+    question = $.parseJSON(data["question"])
+    question.url = '/questions/' + question.id
+    question.isAuthor = question.user_id == gon.current_user
+    $(".questions").append ->
+      HandlebarsTemplates['questions/question_preview'](question)
+
 $(document).ready(ready)
 $(document).on('page:load', ready)
 $(document).on('page:update', ready)

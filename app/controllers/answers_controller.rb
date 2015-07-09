@@ -8,12 +8,22 @@ class AnswersController < ApplicationController
   before_action :check_authority, only: [:destroy, :update, :mark_solution]
 
   def create
-    @answer = @question.answers.build(answers_params)
-    @answer.user = current_user
+    @answer = @question.answers.build(answers_params.merge(user: current_user))
     if @answer.save
-      flash.notice = 'Your answer successfully added'
+      # Don't know how to nest attachments into answer
+      PrivatePub.publish_to "/questions/#{@question.id}/answers",
+                            response: {
+                              answer: @answer,
+                              attachments: @answer.attachments,
+                              answers_count: @question.answers.count
+                            }.to_json
+      render json: {
+        answer: @answer,
+        attachments: @answer.attachments,
+        answers_count: @question.answers.count
+      }
     else
-      flash.notice = 'Something goes wrong. Please try to resubmit your answer'
+      render json: { errors: @answer.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

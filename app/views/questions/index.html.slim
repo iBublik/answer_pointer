@@ -2,10 +2,14 @@ section.questions
   h1 List of all questions
   hr
 
-  - @questions.each do |question|
-    p= link_to question.title, question, class: 'question'
-    - if belongs_to_current_user? question
-      = link_to 'Delete', question_path(question), method: :delete, class: 'btn btn-danger'
-    hr
+  - @questions.find_each do |question|
+    p id="question-#{question.id}"
+      = link_to question.title, question, class: 'question'
+      - if belongs_to_current_user? question
+        = link_to 'Delete', question_path(question), method: :delete,
+          class: 'btn btn-danger pull-right', style: "margin-bottom: 0"
+      hr
 
 = link_to 'Ask question', new_question_path, class: 'btn btn-primary'
+
+= subscribe_to "/questions/index"

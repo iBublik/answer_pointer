@@ -1,0 +1,3 @@
+hr
+p.comment data-commentable-id="{{commentable_id}}" id="comment-{{id}}"
+  | {{body}}

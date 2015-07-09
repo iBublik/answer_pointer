@@ -17,9 +17,9 @@ RSpec.describe AnswersController, type: :controller do
                }.to change(question.answers, :count).by(1)
       end
 
-      it 'render create template' do
+      it 'responds with success' do
         post :create, question_id: question.id, answer: attributes_for(:answer), format: :js
-        expect(response).to render_template :create
+        expect(response).to be_success
       end
 
       it 'should bind new answer to it\'s creator' do
@@ -40,9 +40,9 @@ RSpec.describe AnswersController, type: :controller do
                }.to_not change(Answer, :count)
       end
 
-      it 'render create template' do
+      it 'responds with error' do
         post :create, question_id: question.id, answer: attributes_for(:invalid_answer), format: :js
-        expect(response).to render_template :create
+        expect(response).to be_unprocessable
       end
     end
   end

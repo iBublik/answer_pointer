@@ -1,0 +1,40 @@
+.answer id="answer-{{id}}"
+  hr
+  .rating.row
+    b.col-sm-2.rating-value Rating: {{rating}}
+    | {{#unless isAuthor}}
+    a data-type="json" class="vote-link vote-up col-sm-1" data-remote="true" rel="nofollow" data-method="patch" href="/answers/{{id}}/vote_up"
+        i class="glyphicon glyphicon-plus" Up
+    a data-type="json" class="vote-link vote-down col-sm-1" data-remote="true" rel="nofollow" data-method="patch" href="/answers/{{id}}/vote_down"
+        i class="glyphicon glyphicon-minus" Down
+
+    i class="vote-cancel" style="display:none" Voted
+      a data-type="json" data-remote="true" rel="nofollow" data-method="patch" href="/answers/{{id}}/vote_cancel" (Cancel)
+    | {{/unless}}
+
+  p.answer-body
+    | {{body}}
+
+  |{{#if attachments}}
+  .attachments
+    p Attachments:
+    ul
+      |{{#each attachments}}
+      li id="attach-{{this.id}}"
+        a href="{{this.file.url}}" {{this.name}}
+        |{{#if ../isAuthor}}
+        a id="delete-attach-{{this.id}}" class="delete-attach-link" data-remote="true" rel="nofollow" data-method="delete" href="/attachments/{{this.id}}"
+          i class="glyphicon glyphicon-remove" Remove
+        |{{/if}}
+      |{{/each}}
+  |{{/if}}
+
+  | {{#if isAuthor}}
+  a class="btn btn-danger" data-remote="true" rel="nofollow" data-method="delete" href="/answers/{{id}}"
+    | Delete
+  a class="btn btn-warning edit-answer-link" data-answer-id="{{id}}" href=""
+    | Edit
+  | {{/if}}
+
+  a class="solution-link" data-remote="true" rel="nofollow" data-method="patch" href="/answers/{{id}}/mark_solution"
+    | Mark as solution
