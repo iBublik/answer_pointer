@@ -10,10 +10,10 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :questions, concerns: [:votable], shallow: true do
+  resources :questions, concerns: :votable, shallow: true do
     resources :comments, defaults: { commentable: 'questions' }
 
-    resources :answers, except: [:index, :show], concerns: [:votable] do
+    resources :answers, except: [:index, :show], concerns: :votable do
       resources :comments, defaults: { commentable: 'answers' }
       member do
         patch 'mark_solution'

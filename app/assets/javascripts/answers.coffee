@@ -13,12 +13,8 @@ ready = ->
 
   addAnswer = (data) ->
     $('.answers-count').html("#{data.answers_count} Answers")
-    answer = data.answer
+    answer = data
     answer.isAuthor = answer.user_id == gon.current_user
-
-    answer.attachments = data.attachments
-    for attach in answer.attachments
-      attach.name = attach.file.url.split('/').slice(-1)[0]
 
     $('.answers').append ->
       HandlebarsTemplates['answers/answer'](answer)
@@ -43,22 +39,26 @@ ready = ->
 
   questionId = $('.question').data('questionId')
   PrivatePub.subscribe "/questions/#{questionId}/answers", (data, channel) ->
-    response = $.parseJSON(data["response"])
+    response = $.parseJSON(data['answer'])
     addAnswer(response)
 
   $('form.new_answer').on 'ajax:success', (e, data, status, xhr) ->
-    response = $.parseJSON(xhr.responseText)
+    answer = $.parseJSON(xhr.responseText)
 
     $(@).find('#answer_body').val('')
-    addAnswer(response) if !$("#answer-#{response.answer.id}").length
+    addAnswer(answer) if !$("#answer-#{answer.id}").length
 
     $('.notice').html('Your answer successfully added')
   .on 'ajax:error', (e, xhr, status, error) ->
     response = $.parseJSON(xhr.responseText)
+    answer = { errors: [] }
+    $.each response.errors, (field, errorsAr) ->
+      $.each errorsAr, (index, item) ->
+        answer.errors.push("#{field} #{item}")
 
     $form = $(@).closest('form')
     $errors = $form.children('.error_explanation')
-    errorsHtml = HandlebarsTemplates['shared/errors'](response)
+    errorsHtml = HandlebarsTemplates['shared/errors'](answer)
 
     if $errors.length
       $errors.html(errorsHtml)

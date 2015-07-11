@@ -4,39 +4,28 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_answer, only: [:destroy, :update, :mark_solution]
   before_action :set_question, only: [:destroy, :update, :mark_solution]
-  before_action :find_question, only: [:create]
+  before_action :find_question, only: :create
   before_action :check_authority, only: [:destroy, :update, :mark_solution]
+  after_action :publish_answer, only: :create
+
+  respond_to :js
+  respond_to :json, only: :create
 
   def create
-    @answer = @question.answers.build(answers_params.merge(user: current_user))
-    if @answer.save
-      # Don't know how to nest attachments into answer
-      PrivatePub.publish_to "/questions/#{@question.id}/answers",
-                            response: {
-                              answer: @answer,
-                              attachments: @answer.attachments,
-                              answers_count: @question.answers.count
-                            }.to_json
-      render json: {
-        answer: @answer,
-        attachments: @answer.attachments,
-        answers_count: @question.answers.count
-      }
-    else
-      render json: { errors: @answer.errors.full_messages }, status: :unprocessable_entity
-    end
+    respond_with(@answer = @question.answers.create(answers_params.merge(user: current_user)))
   end
 
   def destroy
-    flash.notice = 'Your answer was successfully deleted' if @answer.destroy
+    respond_with(@answer.destroy)
   end
 
   def update
     @answer.update(answers_params)
+    respond_with @answer
   end
 
   def mark_solution
-    @answer.mark_solution
+    respond_with(@answer.mark_solution)
   end
 
   private
@@ -51,6 +40,13 @@ class AnswersController < ApplicationController
 
   def set_question
     @question = @answer.question
+  end
+
+  def publish_answer
+    return unless @answer.valid?
+
+    answer = render_to_string partial: 'answer', formats: [:json], locals: { answer: @answer }
+    PrivatePub.publish_to "/questions/#{@question.id}/answers", answer: answer
   end
 
   def check_authority

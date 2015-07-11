@@ -21,3 +21,17 @@
 
 en:
   hello: "Hello world"
+  questions:
+    vote_up:
+      message: 'Your vote has been accepted'
+    vote_cancel:
+      message: 'Your vote has been canceled'
+    vote_down:
+      message: 'Your vote has been accepted'
+  answers:
+    vote_up:
+      message: 'Your vote has been accepted'
+    vote_cancel:
+      message: 'Your vote has been canceled'
+    vote_down:
+      message: 'Your vote has been accepted'

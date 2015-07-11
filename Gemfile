@@ -49,6 +49,7 @@ gem 'thin'
 
 gem 'gon'
 gem 'handlebars_assets'
+gem 'responders'
 
 gem 'quiet_assets', group: :development
 
