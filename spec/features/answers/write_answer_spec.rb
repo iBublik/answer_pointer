@@ -41,6 +41,6 @@ feature 'User answer', %q{
     click_on 'Create'
 
     expect(current_path).to eq question_path(question)
-    expect(page).to have_content 'Body can\'t be blank'
+    expect(page).to have_content 'body can\'t be blank'
   end
 end

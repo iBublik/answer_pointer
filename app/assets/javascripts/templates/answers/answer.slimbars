@@ -21,7 +21,7 @@
     ul
       |{{#each attachments}}
       li id="attach-{{this.id}}"
-        a href="{{this.file.url}}" {{this.name}}
+        a href="{{this.file.url}}" {{this.file.identifier}}
         |{{#if ../isAuthor}}
         a id="delete-attach-{{this.id}}" class="delete-attach-link" data-remote="true" rel="nofollow" data-method="delete" href="/attachments/{{this.id}}"
           i class="glyphicon glyphicon-remove" Remove

@@ -13,12 +13,12 @@ RSpec.describe AnswersController, type: :controller do
         expect { post :create,
                  question_id: question.id,
                  answer: attributes_for(:answer),
-                 format: :js
+                 format: :json
                }.to change(question.answers, :count).by(1)
       end
 
       it 'responds with success' do
-        post :create, question_id: question.id, answer: attributes_for(:answer), format: :js
+        post :create, question_id: question.id, answer: attributes_for(:answer), format: :json
         expect(response).to be_success
       end
 
@@ -26,7 +26,7 @@ RSpec.describe AnswersController, type: :controller do
         expect { post :create,
                  question_id: question.id,
                  answer: attributes_for(:answer),
-                 format: :js
+                 format: :json
                }.to change(@user.answers, :count).by(1)
       end
     end
@@ -36,12 +36,13 @@ RSpec.describe AnswersController, type: :controller do
         expect { post :create,
                  question_id: question.id,
                  answer: attributes_for(:invalid_answer),
-                 format: :js
+                 format: :json
                }.to_not change(Answer, :count)
       end
 
       it 'responds with error' do
-        post :create, question_id: question.id, answer: attributes_for(:invalid_answer), format: :js
+        post :create, question_id: question.id,
+                      answer: attributes_for(:invalid_answer), format: :json
         expect(response).to be_unprocessable
       end
     end

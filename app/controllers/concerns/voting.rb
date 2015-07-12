@@ -6,10 +6,11 @@ module Voting
   included do
     before_action :find_votable, only: [:vote_up, :vote_down, :vote_cancel]
     before_action :permit_voting, only: [:vote_up, :vote_down, :vote_cancel]
+    respond_to :json, only: [:vote_up, :vote_down, :vote_cancel]
   end
 
   def vote_up
-    vote(1)
+    vote 1
   end
 
   def vote_down
@@ -17,18 +18,12 @@ module Voting
   end
 
   def vote_cancel
-    votable_type = model_name(@votable)
-
     if @votable.voted_by?(current_user)
-      @votable.cancel_vote(current_user)
-      render json: {
-        rating: @votable.reload.rating,
-        type: votable_type,
-        id: @votable.id,
-        message: 'Your vote has been canceled'
-      }
+      respond_with(@votable.cancel_vote(current_user)) do |format|
+        format.json { render_response }
+      end
     else
-      render json: { error: "You didn't vote for this #{votable_type}" },
+      render json: { error: "You didn't vote for this #{model_name(@votable)}" },
              status: :method_not_allowed
     end
   end
@@ -36,22 +31,23 @@ module Voting
   private
 
   def vote(vote_value)
-    action = vote_value == 1 ? 'up' : 'down'
-    votable_type = model_name(@votable)
-
     if @votable.voted_by?(current_user, vote_value)
-      render json: { error: "You've already voted #{action} this #{votable_type}" },
+      render json: { error: "You've already voted #{vote_action} this #{model_name(@votable)}" },
              status: :forbidden
     else
-      @votable.make_vote(current_user, vote_value)
-      render json: {
-        rating: @votable.reload.rating,
-        type: votable_type,
-        id: @votable.id,
-        action: action,
-        message: 'Your vote has been accepted'
-      }
+      respond_with(@votable.make_vote(current_user, vote_value)) do |format|
+        format.json { render_response }
+      end
     end
+  end
+
+  def vote_action
+    action_name.sub(/^vote_/, '')
+  end
+
+  def render_response
+    render partial: 'shared/vote',
+           locals: { action: vote_action, message: t('.message'), type: model_name(@votable) }
   end
 
   def model_klass
