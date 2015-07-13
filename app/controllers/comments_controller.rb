@@ -17,7 +17,7 @@ class CommentsController < ApplicationController
 
   def find_commentable
     @commentable = commentable_name.classify
-      .constantize.find(params["#{commentable_name.singularize}_id".to_sym])
+                   .constantize.find(params["#{commentable_name.singularize}_id".to_sym])
   end
 
   def set_publish_id
