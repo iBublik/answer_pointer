@@ -51,7 +51,16 @@ gem 'gon'
 gem 'handlebars_assets'
 gem 'responders'
 
-gem 'quiet_assets', group: :development
+gem 'email_validator'
+
+group :development do
+  gem 'quiet_assets'
+  gem 'letter_opener'
+end
+
+gem 'omniauth'
+gem 'omniauth-facebook'
+gem 'omniauth-twitter'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -73,4 +82,6 @@ group :test do
   gem 'poltergeist'
   gem 'database_cleaner'
   gem 'test_after_commit'
+  gem 'email_spec'
+  gem 'capybara-email'
 end
