@@ -70,5 +70,7 @@ describe Ability do
     it { should be_able_to :read, :all }
 
     it { should be_able_to :create, Comment }
+
+    it { should be_able_to :manage, :profile }
   end
 end
