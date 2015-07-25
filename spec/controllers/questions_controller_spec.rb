@@ -158,9 +158,9 @@ RSpec.describe QuestionsController, type: :controller do
             .to_not change(Question, :count)
       end
 
-      it 'responds with status forbidden' do
+      it 'redirects to root path' do
         delete :destroy, id: question
-        expect(response).to be_forbidden
+        expect(response).to redirect_to root_path
       end
     end
   end

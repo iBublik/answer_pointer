@@ -5,11 +5,12 @@ section.questions
   - @questions.find_each do |question|
     p id="question-#{question.id}"
       = link_to question.title, question, class: 'question'
-      - if belongs_to_current_user? question
+      - if can?(:destroy, question)
         = link_to 'Delete', question_path(question), method: :delete,
           class: 'btn btn-danger pull-right', style: "margin-bottom: 0"
       hr
 
-= link_to 'Ask question', new_question_path, class: 'btn btn-primary'
+- if can?(:create, Question)
+  = link_to 'Ask question', new_question_path, class: 'btn btn-primary'
 
 = subscribe_to "/questions/index"
