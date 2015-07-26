@@ -10,10 +10,11 @@ module Votable
   def make_vote(user, value)
     vote = votes.find_or_initialize_by(user: user)
     vote.update(value: value)
+    self
   end
 
   def voted_by?(user, value = [-1, 1])
-    votes.where(user: user, value: value).any?
+    votes.exists?(user: user, value: value)
   end
 
   def cancel_vote(user)

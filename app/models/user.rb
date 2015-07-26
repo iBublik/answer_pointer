@@ -27,6 +27,10 @@ class User < ActiveRecord::Base
     user
   end
 
+  def owns?(object)
+    id == object.user_id
+  end
+
   def create_authorization(auth)
     authorizations.create(provider: auth.provider, uid: auth.uid)
   end

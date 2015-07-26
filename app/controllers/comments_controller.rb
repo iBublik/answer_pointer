@@ -3,6 +3,8 @@ class CommentsController < ApplicationController
   before_action :find_commentable
   before_action :set_publish_id
 
+  authorize_resource
+
   def create
     @comment = @commentable.comments.build(comments_params.merge(user: current_user))
     if @comment.save

@@ -4,11 +4,12 @@ class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :find_question, only: [:show, :update, :destroy]
   before_action :gon_current_user, only: [:index, :show]
-  before_action :check_authority, only: [:update, :destroy]
   before_action :build_answer, only: :show
   after_action :publish_question, only: :create
 
   respond_to :js, only: :update
+
+  authorize_resource
 
   def index
     respond_with(@questions = Question.all)
@@ -43,12 +44,6 @@ class QuestionsController < ApplicationController
 
   def publish_question
     PrivatePub.publish_to '/questions/index', question: @question.to_json if @question.valid?
-  end
-
-  def check_authority
-    return if @question.user_id == current_user.id
-
-    render status: :forbidden, text: 'Only author of question can perform this action'
   end
 
   def gon_current_user

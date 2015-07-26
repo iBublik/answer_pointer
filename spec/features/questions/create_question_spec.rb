@@ -23,13 +23,6 @@ feature 'Create question', %q{
     expect(page).to have_content(question.body)
   end
 
-  scenario 'Non-authenticated user tries to create question' do
-    visit questions_path
-    click_on 'Ask question'
-
-    expect(page).to have_content 'You need to sign in or sign up before continuing.'
-  end
-
   scenario 'Authenticated user tries to create question with invalid parameters' do
     sign_in(user)
 

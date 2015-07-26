@@ -4,7 +4,7 @@
     p.comment data-commentable-id="#{commentable.id}" id="comment-#{comment.id}"
       = comment.body
   hr
-  -if user_signed_in?
+  -if can?(:create, Comment)
     = link_to 'Add comment', '', class: 'add-comment'
     = simple_form_for [commentable, commentable.comments.build],
                       remote: true, data: { type: :json } do |f|

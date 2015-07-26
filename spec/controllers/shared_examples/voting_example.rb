@@ -160,7 +160,7 @@ shared_examples 'voting' do
 
       it 'responds with error' do
         patch :vote_cancel, id: votable, format: :json
-        expect(response).to be_method_not_allowed
+        expect(response).to be_forbidden
       end
     end
 
