@@ -25,6 +25,9 @@ class Ability
 
   def user_abilities
     guest_abilities
+
+    can :manage, :profile
+
     alias_action :create, :read, :update, :destroy, to: :crud
     can :crud, [Question, Answer], user: user
     can :create, Comment
@@ -38,11 +41,9 @@ class Ability
     end
 
     can :vote_up, [Question, Answer] do |votable|
-      # byebug
       can_vote?(votable, 1)
     end
     can :vote_down, [Question, Answer] do |votable|
-      # byebug
       can_vote?(votable, -1)
     end
     can :vote_cancel, [Question, Answer] do |votable|
