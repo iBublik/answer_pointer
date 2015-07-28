@@ -1,5 +1,4 @@
-class Api::V1::ProfilesController < ApplicationController
-  before_action :doorkeeper_authorize!
+class Api::V1::ProfilesController < Api::V1::BaseController
   authorize_resource class: false
 
   respond_to :json
@@ -11,13 +10,4 @@ class Api::V1::ProfilesController < ApplicationController
   def me
     respond_with current_resource_owner
   end
-
-  protected
-
-  def current_resource_owner
-    @current_resource_owner ||= User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
-  end
-
-  # This alias method is for CanCan
-  alias_method :current_user, :current_resource_owner
 end

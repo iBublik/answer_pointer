@@ -8,8 +8,9 @@ class CommentsController < ApplicationController
   def create
     @comment = @commentable.comments.build(comments_params.merge(user: current_user))
     if @comment.save
-      PrivatePub.publish_to "/questions/#{@publish_id}/comments", comment: @comment.to_json
-      render json: @comment
+      PrivatePub.publish_to "/questions/#{@publish_id}/comments",
+                            comment: @comment.attributes.to_json
+      render json: @comment.attributes
     else
       render json: { errors: @comment.errors.full_messages }, status: :unprocessable_entity
     end
