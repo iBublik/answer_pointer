@@ -4,7 +4,7 @@ describe 'Profile API' do
   let(:me) { create(:user) }
   let(:access_token) { create(:access_token, resource_owner_id: me.id) }
 
-  describe 'GET /me' do
+  describe 'GET #me' do
     context 'unauthorized' do
       it 'returns 401 status if there is no access token' do
         get '/api/v1/profiles/me', format: :json
@@ -61,7 +61,7 @@ describe 'Profile API' do
       end
 
       it 'contains a list of users' do
-        expect(response.body).to be_json_eql(users.to_json)
+        expect(response.body).to be_json_eql(users.to_json).at_path('profiles')
       end
 
       it 'does not containt requesting user' do
@@ -70,18 +70,14 @@ describe 'Profile API' do
 
       %w(id email created_at updated_at admin).each do |attr|
         it "contains #{attr}" do
-          users.each_with_index do |user, index|
-            expect(response.body).to be_json_eql(user.send(attr.to_sym).to_json)
-              .at_path("#{index}/#{attr}")
-          end
+          expect(response.body).to be_json_eql(users.first.send(attr.to_sym).to_json)
+              .at_path("profiles/0/#{attr}")
         end
       end
 
       %w(password encrypted_password).each do |attr|
         it "does not contain #{attr}" do
-          users.each_with_index do |_user, index|
-            expect(response.body).to_not have_json_path("#{index}/#{attr}")
-          end
+          expect(response.body).to_not have_json_path("profiles/0/#{attr}")
         end
       end
     end
