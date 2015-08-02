@@ -1,0 +1,5 @@
+test:
+  database: qna_test
+  adapter: postgresql
+  encoding: utf8
+  pool: 5

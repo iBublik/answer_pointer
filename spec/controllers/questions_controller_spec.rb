@@ -45,34 +45,37 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'POST #create' do
     sign_in_user
 
+    let(:publish_path) { '/questions/index' }
+    let(:request) { post :create, question: attributes_for(:question) }
+    let(:invalid_params_request) { post :create, question: attributes_for(:invalid_question) }
+
     context 'with valid attributes' do
       it 'should save new question in database' do
-        expect { post :create, question: attributes_for(:question) }
-            .to change(Question, :count).by(1)
+        expect { request }.to change(Question, :count).by(1)
       end
 
       it 'redirects to show view' do
-        post :create, question: attributes_for(:question)
+        request
         expect(response).to redirect_to question_path(assigns(:question))
       end
 
       it 'should bind new question to it\'s creator' do
-        expect { post :create, question: attributes_for(:question) }
-            .to change(@user.questions, :count).by(1)
+        expect { request }.to change(@user.questions, :count).by(1)
       end
     end
 
     context 'with invalid attributes' do
       it 'does not save the question' do
-        expect { post :create, question: attributes_for(:invalid_question) }
-            .to_not change(Question, :count)
+        expect { invalid_params_request }.to_not change(Question, :count)
       end
 
       it 're-renders new view' do
-        post :create, question: attributes_for(:invalid_question)
+        invalid_params_request
         expect(response).to render_template :new
       end
     end
+
+    it_behaves_like 'publishable'
   end
 
   describe 'PATCH #update' do
@@ -119,7 +122,7 @@ RSpec.describe QuestionsController, type: :controller do
     context 'invalid atributes' do
       before do
         patch :update, id: current_user_question,
-              question: { title: 'new title', body: nil }, format: :js
+                       question: { title: 'new title', body: nil }, format: :js
       end
 
       it 'does not change question attributes' do
@@ -154,8 +157,7 @@ RSpec.describe QuestionsController, type: :controller do
 
     context 'by non-author' do
       it 'does not delete question' do
-        expect { delete :destroy, id: question }
-            .to_not change(Question, :count)
+        expect { delete :destroy, id: question }.to_not change(Question, :count)
       end
 
       it 'redirects to root path' do

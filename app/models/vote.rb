@@ -14,9 +14,9 @@ class Vote < ActiveRecord::Base
     return unless votable.present?
 
     if destroyed?
-      votable.decrement!(:rating, value)
+      votable.class.update_counters(votable.id, rating: -value)
     elsif previous_changes.key?(:value)
-      votable.increment!(:rating, value - previous_changes[:value].first)
+      votable.class.update_counters(votable.id, rating: value - previous_changes[:value].first)
     end
   end
 end

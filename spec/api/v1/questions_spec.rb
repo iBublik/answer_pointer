@@ -1,27 +1,20 @@
-require 'rails_helper'
+require_relative '../api_helper'
 
-describe 'Questions API' do
+RSpec.describe 'Questions API', type: :request do
   let(:access_token) { create(:access_token) }
 
-  describe 'GET #index' do
-    context 'unauthorized' do
-      it 'returns 401 status if there is no access_token' do
-        get api_v1_questions_path, format: :json
-        expect(response).to have_http_status :unauthorized
-      end
+  describe 'GET /questions' do
+    let(:method) { :get }
+    let(:path) { api_v1_questions_path }
 
-      it 'returns 401 status if access_token is not valid' do
-        get api_v1_questions_path, format: :json, access_token: '1234'
-        expect(response).to have_http_status :unauthorized
-      end
-    end
+    it_behaves_like 'API Authenticable'
 
     context 'authorized' do
       let!(:questions) { create_pair(:question) }
       let(:question) { questions.first }
       let!(:answer) { create(:answer, question: question) }
 
-      before { get api_v1_questions_path, format: :json, access_token: access_token.token }
+      before { json_request(method, path, access_token: access_token.token) }
 
       it 'returns 200 status code' do
         expect(response).to be_success
@@ -58,27 +51,18 @@ describe 'Questions API' do
     end
   end
 
-  describe 'GET #show' do
+  describe 'GET /questions/:question_id' do
     let!(:question) { create(:question) }
-    let(:url) { api_v1_question_path(question) }
+    let(:method) { :get }
+    let(:path) { api_v1_question_path(question) }
 
-    context 'unauthorized' do
-      it 'returns 401 status if there is no access_token' do
-        get url, format: :json
-        expect(response).to have_http_status :unauthorized
-      end
-
-      it 'returns 401 status if access_token is not valid' do
-        get url, format: :json, access_token: '1234'
-        expect(response).to have_http_status :unauthorized
-      end
-    end
+    it_behaves_like 'API Authenticable'
 
     context 'authorized' do
       let!(:attach) { create(:attachment, attachable: question) }
       let!(:comment) { create(:comment, commentable: question, commentable_type: 'Question') }
 
-      before { get url, format: :json, access_token: access_token.token }
+      before { json_request(method, path, access_token: access_token.token) }
 
       it 'returns 200 status code' do
         expect(response).to be_success
@@ -117,54 +101,50 @@ describe 'Questions API' do
     end
   end
 
-  describe 'POST #create' do
-    let(:url) { api_v1_questions_path }
+  describe 'POST /questions' do
     let(:current_user) { User.find(access_token.resource_owner_id) }
+    let(:method) { :post }
+    let(:path) { api_v1_questions_path }
 
-    context 'unauthorized' do
-      it 'returns 401 status if there is no access_token' do
-        post url, format: :json, question: attributes_for(:question)
-        expect(response).to have_http_status :unauthorized
-      end
-
-      it 'returns 401 status if access_token is not valid' do
-        post url, format: :json, access_token: '1234', question: attributes_for(:question)
-        expect(response).to have_http_status :unauthorized
-      end
-    end
+    it_behaves_like 'API Authenticable'
 
     context 'authorized' do
       context 'with valid attributes' do
+        let(:request) do
+          json_request(
+            method, path, question: attributes_for(:question), access_token: access_token.token
+          )
+        end
+
         it 'returns status 201' do
-          post url, format: :json, access_token: access_token.token,
-                    question: attributes_for(:question)
+          request
           expect(response).to have_http_status :created
         end
 
         it 'saves question in database' do
-          expect { post url, format: :json, access_token: access_token.token,
-                             question: attributes_for(:question)
-                 }.to change(Question, :count).by(1)
+          expect { request }.to change(Question, :count).by(1)
         end
 
         it 'assigns created question to current user' do
-          expect { post url, format: :json, access_token: access_token.token,
-                             question: attributes_for(:question)
-                 }.to change(current_user.questions, :count).by(1)
+          expect { request }.to change(current_user.questions, :count).by(1)
         end
       end
 
       context 'witn invalid attributes' do
+        let(:invalid_params_request) do
+          json_request(
+            method, path, question: attributes_for(:invalid_question),
+                          access_token: access_token.token
+          )
+        end
+
         it 'returns status 422' do
-          post url, format: :json, access_token: access_token.token,
-                    question: attributes_for(:invalid_question)
+          invalid_params_request
           expect(response).to have_http_status :unprocessable_entity
         end
 
         it 'does not save question in database' do
-          expect { post url, format: :json, access_token: access_token.token,
-                             question: attributes_for(:invalid_question)
-                 }.to_not change(Question, :count)
+          expect { invalid_params_request }.to_not change(Question, :count)
         end
       end
     end
