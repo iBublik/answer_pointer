@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Question, type: :model do
+  subject { build(:question) }
+
   it { should belong_to :user }
   it { should have_many(:answers).dependent(:destroy) }
 

@@ -8,44 +8,41 @@ RSpec.describe AnswersController, type: :controller do
   sign_in_user
 
   describe 'POST #create' do
+    let(:publish_path) { "/questions/#{question.id}/answers" }
+    let(:request) do
+      post :create, question_id: question.id, answer: attributes_for(:answer), format: :json
+    end
+    let(:invalid_params_request) do
+      post :create, question_id: question.id, answer: attributes_for(:invalid_answer), format: :json
+    end
+
     context 'with valid parameters' do
       it 'should save new answer in database' do
-        expect { post :create,
-                 question_id: question.id,
-                 answer: attributes_for(:answer),
-                 format: :json
-               }.to change(question.answers, :count).by(1)
+        expect { request }.to change(question.answers, :count).by(1)
       end
 
       it 'responds with success' do
-        post :create, question_id: question.id, answer: attributes_for(:answer), format: :json
+        request
         expect(response).to be_success
       end
 
       it 'should bind new answer to it\'s creator' do
-        expect { post :create,
-                 question_id: question.id,
-                 answer: attributes_for(:answer),
-                 format: :json
-               }.to change(@user.answers, :count).by(1)
+        expect { request }.to change(@user.answers, :count).by(1)
       end
     end
 
     context 'with invalid params' do
       it 'does not save the answer' do
-        expect { post :create,
-                 question_id: question.id,
-                 answer: attributes_for(:invalid_answer),
-                 format: :json
-               }.to_not change(Answer, :count)
+        expect { invalid_params_request }.to_not change(Answer, :count)
       end
 
       it 'responds with error' do
-        post :create, question_id: question.id,
-                      answer: attributes_for(:invalid_answer), format: :json
+        invalid_params_request
         expect(response).to be_unprocessable
       end
     end
+
+    it_behaves_like 'publishable'
   end
 
   describe 'DELETE #destroy' do
