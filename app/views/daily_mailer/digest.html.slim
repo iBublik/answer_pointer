@@ -1,0 +1,3 @@
+p Hi there! Here's the list of all questions been asked yesterday:
+- @questions.find_each do |question|
+  p= link_to question.title, question_url(question)

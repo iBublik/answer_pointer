@@ -1,15 +1,16 @@
 language: ruby
 addons:
   postgresql: "9.3"
+services:
+  - redis-server
 rvm:
   - 2.2.1
 gemfile: Gemfile
 before_script:
   - psql -c 'create database qna_test;' -U postgres
   - cp config/database.yml.travis  config/database.yml
-  - bundle exec rackup private_pub.ru -s thin -E production &
+  - bundle exec rackup private_pub.ru -s thin -E production
   - sleep 3
 script:
   - bundle exec rake db:setup
-  - bundle exec rake db:test:prepare
   - bundle exec rspec spec

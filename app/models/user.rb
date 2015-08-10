@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   has_many :votes, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :authorizations, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
 
   def self.find_for_oauth(auth)
     authorization = Authorization.find_by(provider: auth.provider, uid: auth.uid.to_s)
@@ -29,6 +30,10 @@ class User < ActiveRecord::Base
 
   def owns?(object)
     id == object.user_id
+  end
+
+  def subscribed_to?(question)
+    Subscription.exists?(user: self, question: question)
   end
 
   def create_authorization(auth)

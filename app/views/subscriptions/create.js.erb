@@ -1,0 +1,5 @@
+<% if @subscription.errors.any? %>
+  $('.alert').html("You've already subscribed for this question")
+<% else %>
+  $('a.subscribe').replaceWith('<i class="glyphicon glyphicon-ok">Subscribed</i>');
+<% end %>

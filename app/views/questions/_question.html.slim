@@ -1,5 +1,11 @@
 section.question id="question-#{question.id}" data-question-id="#{question.id}"
   h3.question-title = question.title
+  - if can?(:create, Subscription.new(question: question))
+    = link_to 'Subscribe', question_subscriptions_path(question), remote: true,
+                                                                  method: :post,
+                                                                  class: 'subscribe'
+  - elsif subscribed?
+    i.glyphicon.glyphicon-ok Subscribed
   hr
   = render 'shared/rating', votable: question, vote: question.user_vote(current_user)
 

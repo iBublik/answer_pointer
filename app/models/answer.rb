@@ -12,10 +12,18 @@ class Answer < ActiveRecord::Base
   validates :question_id, presence: true
   validates :user_id, presence: true
 
+  after_commit :notify_subscribers, on: :create
+
   def mark_solution
     transaction do
       question.answers.update_all(is_solution: false)
       update!(is_solution: true)
     end
+  end
+
+  private
+
+  def notify_subscribers
+    AnswerNotificationsJob.perform_later(self)
   end
 end

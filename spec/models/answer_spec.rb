@@ -32,4 +32,19 @@ RSpec.describe Answer, type: :model do
       expect(question.answers.where(is_solution: true).count).to eq 1
     end
   end
+
+  describe 'question subscribers notifications' do
+    subject { build(:answer) }
+
+    it 'should call notification job after create' do
+      expect(AnswerNotificationsJob).to receive(:perform_later).with(subject)
+      subject.save!
+    end
+
+    it 'should not call notification job after update' do
+      subject.save!
+      expect(AnswerNotificationsJob).to_not receive(:perform_later)
+      subject.touch
+    end
+  end
 end

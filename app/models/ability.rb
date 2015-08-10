@@ -49,6 +49,10 @@ class Ability
     can :vote_cancel, [Question, Answer] do |votable|
       !user.owns?(votable) && votable.voted_by?(user)
     end
+
+    can :create, Subscription do |subscription|
+      !user.subscribed_to?(subscription.question)
+    end
   end
 
   def can_vote?(votable, value)
