@@ -58,7 +58,7 @@ class VerificationsController < ApplicationController
   end
 
   def find_verification
-    @verification = Verification.find_by_id(params[:id])
+    @verification = Verification.find(params[:id])
 
     redirect_to root_path unless @verification.present? && @verification.token == params[:token]
   end

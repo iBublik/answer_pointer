@@ -5,7 +5,7 @@ RSpec.describe QuestionsController, type: :controller do
   let(:current_user_question) { create(:question, user: @user) }
 
   describe 'GET #index' do
-    let(:questions) { create_list(:question, 2) }
+    let(:questions) { create_pair(:question) }
 
     before { get :index }
 
@@ -45,7 +45,7 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'POST #create' do
     sign_in_user
 
-    let(:publish_path) { '/questions/index' }
+    let(:publish_path) { "/questions/index" }
     let(:request) { post :create, question: attributes_for(:question) }
     let(:invalid_params_request) { post :create, question: attributes_for(:invalid_question) }
 

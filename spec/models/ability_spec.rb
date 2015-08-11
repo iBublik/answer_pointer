@@ -23,6 +23,10 @@ describe Ability do
     let(:user) { create(:user) }
     let(:answer_to_user_question) { create(:answer, question: user_question) }
     let(:attachment) { create(:attachment) }
+    let(:subscription) { build(:subscription) }
+    let(:subscription_to_subscribed_question) do
+      build(:subscription, question: create(:subscription, user: user).question)
+    end
 
     %w(answer question).each do |resource|
       # resource of the user
@@ -72,5 +76,8 @@ describe Ability do
     it { should be_able_to :create, Comment }
 
     it { should be_able_to :manage, :profile }
+
+    it { should be_able_to :create, subscription }
+    it { should_not be_able_to :create, subscription_to_subscribed_question }
   end
 end

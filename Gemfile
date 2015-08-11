@@ -71,6 +71,11 @@ gem 'active_model_serializers'
 gem 'oj'
 gem 'oj_mimic_json'
 
+gem 'sidekiq'
+gem 'whenever'
+
+gem 'sinatra', '>= 1.3.0', require: nil
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
@@ -94,4 +99,5 @@ group :test do
   gem 'email_spec'
   gem 'capybara-email'
   gem 'json_spec'
+  gem 'codeclimate-test-reporter', require: nil
 end
