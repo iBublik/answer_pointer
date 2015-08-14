@@ -24,6 +24,7 @@ RSpec.configure do |config|
 
   config.before(:each, sphinx: true) do
     # Sphinx Index data when running an acceptance spec.
+    DatabaseCleaner.strategy = :truncation
     index
   end
 
