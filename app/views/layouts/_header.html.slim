@@ -2,6 +2,7 @@ header.navbar.navbar-inverse
   .container
     .navbar-header
       = link_to 'Answer Pointer', root_path, class: 'navbar-brand'
+    = render 'search/form'
     .navbar-collapse.collapse
       .navbar-right
         - if user_signed_in?
