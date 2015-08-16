@@ -20,3 +20,7 @@ config/database.yml
 
 #Ignore uploaded files
 /public/uploads
+
+# Ignore sphinx files
+config/*sphinx.conf
+db/sphinx

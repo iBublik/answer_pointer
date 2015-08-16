@@ -1,0 +1,5 @@
+.navbar-form.navbar-left
+  = simple_form_for :search, url: search_path, method: :get do |f|
+    = f.input :query, as: :string, label: false    
+    = f.input :filter, collection: Search::SEARCHING_SOURCES, prompt: 'All', label: false
+    = f.button :submit, 'Search', class: 'btn btn-default navbar-btn'
