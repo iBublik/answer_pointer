@@ -24,3 +24,6 @@ config/database.yml
 # Ignore sphinx files
 config/*sphinx.conf
 db/sphinx
+
+# Ignore private_pub settings
+config/private_pub.yml
