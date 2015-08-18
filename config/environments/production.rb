@@ -76,4 +76,11 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.app_domain = 'http://128.199.33.232'
+
+  # Email
+  config.action_mailer.perform_deliveries = true
+  config.email_default_from = 'notifier@answer-pointer.com'
+  config.action_mailer.default_url_options = { host: config.app_domain }
 end
