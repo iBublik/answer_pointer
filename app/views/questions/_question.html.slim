@@ -1,9 +1,10 @@
 section.question id="question-#{question.id}" data-question-id="#{question.id}"
   h3.question-title = question.title
   - if can?(:create, Subscription.new(question: question))
-    = link_to 'Subscribe', question_subscriptions_path(question), remote: true,
-                                                                  method: :post,
-                                                                  class: 'subscribe'
+    - cache cache_key_for_user(question, 'question-subscription') do
+      = link_to 'Subscribe', question_subscriptions_path(question), remote: true,
+                                                                    method: :post,
+                                                                    class: 'subscribe'
   - elsif subscribed?
     i.glyphicon.glyphicon-ok Subscribed
   hr
@@ -13,10 +14,11 @@ section.question id="question-#{question.id}" data-question-id="#{question.id}"
   = render 'attachments/attachments', attachable: question
 
   - if belongs_to_current_user? question
-    = link_to 'Delete', question_path(question), method: :delete, class: 'btn btn-danger'
-    = link_to 'Edit', '', class: 'btn btn-warning edit-question-link',
-              data: { question_id: question.id }
-    = simple_form_for @question, remote: true, html: { id: "edit-question-#{question.id}" } do |f|
-      = render 'question_fields', question: @question, f: f
+    - cache cache_key_for_user(question, 'question-manage') do
+      = link_to 'Delete', question_path(question), method: :delete, class: 'btn btn-danger'
+      = link_to 'Edit', '', class: 'btn btn-warning edit-question-link',
+                            data: { question_id: question.id }
+      = simple_form_for @question, remote: true, html: { id: "edit-question-#{question.id}" } do |f|
+        = render 'question_fields', question: @question, f: f
 
   = render 'comments/comments', commentable: @question

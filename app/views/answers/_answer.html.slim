@@ -10,9 +10,11 @@
         = answer.body
       = render 'attachments/attachments', attachable: answer
       - if can?(:destroy, answer)
-        = link_to 'Delete', answer, method: :delete, class: 'btn btn-danger', remote: true
+        - cache cache_key_for_user(answer, 'answer-delete-link') do
+          = link_to 'Delete', answer, method: :delete, class: 'btn btn-danger', remote: true
       - if can?(:update, answer)
-        = link_to 'Edit', '', class: 'btn btn-warning edit-answer-link',
+        - cache cache_key_for_user(answer, 'answer-edit-link') do
+          = link_to 'Edit', '', class: 'btn btn-warning edit-answer-link',
                             data: { answer_id: answer.id }
       - if show_solution_link
         = link_to 'Mark as solution', mark_solution_answer_path(answer),
