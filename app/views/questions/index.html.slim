@@ -2,13 +2,14 @@ section.questions
   h1 List of all questions
   hr
 
-  - @questions.find_each do |question|
-    p id="question-#{question.id}"
-      = link_to question.title, question, class: 'question'
-      - if can?(:destroy, question)
-        = link_to 'Delete', question_path(question), method: :delete,
-          class: 'btn btn-danger pull-right', style: "margin-bottom: 0"
-      hr
+  - cache collection_cache_key_for :question do
+    - @questions.find_each do |question|
+      p id="question-#{question.id}"
+        = link_to question.title, question, class: 'question'
+        - if can?(:destroy, question)
+          = link_to 'Delete', question_path(question), method: :delete,
+            class: 'btn btn-danger pull-right', style: "margin-bottom: 0"
+        hr
 
 - if can?(:create, Question)
   = link_to 'Ask question', new_question_path, class: 'btn btn-primary'
