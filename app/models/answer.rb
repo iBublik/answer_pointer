@@ -5,7 +5,7 @@ class Answer < ActiveRecord::Base
 
   default_scope { order(is_solution: :desc) }
 
-  belongs_to :question
+  belongs_to :question, touch: true
   belongs_to :user
 
   validates :body, presence: true, length: { maximum: 30_000 }

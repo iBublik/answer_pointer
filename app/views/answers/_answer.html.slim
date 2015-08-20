@@ -1,23 +1,26 @@
 - if answer.persisted?
-  .answer id="answer-#{answer.id}" class=('solution' if answer.is_solution)
-    hr
-    = render 'shared/rating', votable: answer, vote: answer.user_vote(current_user)
+  - cache answer do
+    .answer id="answer-#{answer.id}" class=('solution' if answer.is_solution)
+      hr
+      = render 'shared/rating', votable: answer, vote: answer.user_vote(current_user)
 
-    -if answer.is_solution
-      h4 Solution
-    p.answer-body
-      = answer.body
-    = render 'attachments/attachments', attachable: answer    
-    - if can?(:destroy, answer)
-      = link_to 'Delete', answer, method: :delete, class: 'btn btn-danger', remote: true
-    - if can?(:update, answer)
-      = link_to 'Edit', '', class: 'btn btn-warning edit-answer-link',
-                          data: { answer_id: answer.id }
-    - if show_solution_link
-      = link_to 'Mark as solution', mark_solution_answer_path(answer),
-                                    method: :patch, remote: true,
-                                    class: 'solution-link'
-    = simple_form_for answer, remote: true, html: {id: "edit-answer-#{answer.id}"} do |f|
-      = render 'answers/answer_fields', answer: answer, f: f
+      -if answer.is_solution
+        h4 Solution
+      p.answer-body
+        = answer.body
+      = render 'attachments/attachments', attachable: answer
+      - if can?(:destroy, answer)
+        - cache cache_key_for_user(answer, 'answer-delete-link') do
+          = link_to 'Delete', answer, method: :delete, class: 'btn btn-danger', remote: true
+      - if can?(:update, answer)
+        - cache cache_key_for_user(answer, 'answer-edit-link') do
+          = link_to 'Edit', '', class: 'btn btn-warning edit-answer-link',
+                            data: { answer_id: answer.id }
+      - if show_solution_link
+        = link_to 'Mark as solution', mark_solution_answer_path(answer),
+                                      method: :patch, remote: true,
+                                      class: 'solution-link'
+      = simple_form_for answer, remote: true, html: {id: "edit-answer-#{answer.id}"} do |f|
+        = render 'answers/answer_fields', answer: answer, f: f
 
-    = render 'comments/comments', commentable: answer
+      = render 'comments/comments', commentable: answer
