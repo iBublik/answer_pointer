@@ -10,9 +10,9 @@ RSpec.describe 'Questions API', type: :request do
     it_behaves_like 'API Authenticable'
 
     context 'authorized' do
-      let!(:questions) { create_pair(:question) }
-      let(:question) { questions.first }
-      let!(:answer) { create(:answer, question: question) }
+      let!(:question) { create :question }
+      let!(:answer) { create(:answer) }
+      let!(:answered_question) { answer.question }
 
       before { json_request(method, path, access_token: access_token.token) }
 
@@ -26,25 +26,25 @@ RSpec.describe 'Questions API', type: :request do
 
       %w(id title body created_at updated_at).each do |attr|
         it "question object contains #{attr}" do
-          expect(response.body).to be_json_eql(question.send(attr.to_sym).to_json)
-            .at_path("questions/0/#{attr}")
+          expect(response.body).to be_json_eql(answered_question.send(attr.to_sym).to_json)
+            .at_path("questions/1/#{attr}")
         end
       end
 
       it 'question object containes short_title' do
-        expect(response.body).to be_json_eql(question.title.truncate(10).to_json)
-          .at_path('questions/0/short_title')
+        expect(response.body).to be_json_eql(answered_question.title.truncate(10).to_json)
+          .at_path('questions/1/short_title')
       end
 
       context 'answers' do
         it 'included in question object' do
-          expect(response.body).to have_json_size(1).at_path('questions/0/answers')
+          expect(response.body).to have_json_size(1).at_path('questions/1/answers')
         end
 
         %w(id body created_at updated_at).each do |attr|
           it "contains #{attr}" do
             expect(response.body).to be_json_eql(answer.send(attr.to_sym).to_json)
-              .at_path("questions/0/answers/0/#{attr}")
+              .at_path("questions/1/answers/0/#{attr}")
           end
         end
       end
